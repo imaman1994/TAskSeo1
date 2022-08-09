@@ -6,49 +6,38 @@ import {
     Typography,
   } from "@mui/material";
   import { Box } from "@mui/system";
-  import { useEffect, useState } from "react";
+  import { useState } from "react";
   import CloseIcon from "@mui/icons-material/Close";
-  import {useForm } from "react-hook-form";
   import ProgressDetailsBox from "./component/ProgressDetailsBar";
   // import ProgressDetailsBox from "./component/ProgressDetailsBox";
+
+  const defaultValue = {
+    tagName:'',
+    description:'',
+    fileName:''
+  }
   
-  function DialogBoxCom() {
+  function DummyComp() {
+    const [values,setValues] = useState(defaultValue)
     const [open, setOpen] = useState(false);
-    const [values,setValues] = useState([])
-    const { register, handleSubmit,watch } = useForm();
-    const onSubmit = (data) =>{ console.log(data)
-      setOpen(false)
-    };
 
-    // const file = watch('fileName',false)
-    // console.log('2',file[0]['type'])
-     
+    const changeHandler = e => {
+        e.preventDefault();
+        const {name,value} = e.target
+        setValues({...values, [name]: value})
+     }
 
-    useEffect(() => {
-      const subscription = watch((value, { name }) => setValues(value, name));
-      return () => subscription.unsubscribe();
-    }, [watch]);
-
-    // Object.entries(values).map(item => {
-    //   console.log(item)
-    // })
-
-    // console.log('values',values)
-   const val = "fileName" in values ? values['fileName']?.[0]?.['type']:'Page-Cover'
-   const valSize = "fileName" in values ? values['fileName']?.[0]?.['size']:'0 MB'
-
-     
-  console.log('1',values['fileName']?.length) 
-
- 
-    
+  const handleSubmit =(e)=>{
+   e.preventDefault();
+    console.log(values)
+  }
   
   
     return (
       <>
         <Button onClick={() => setOpen(true)}>open</Button>
         <Dialog open={open}>
-          <form onSubmit={handleSubmit(onSubmit)}>
+          <form onSubmit={handleSubmit}>
             <Grid class="relative h-full w-96 flex justify-center p-5">
               <Grid class="flex flex-col w-96">
                   <Grid class="flex justify-between items-center  bg-white">
@@ -67,20 +56,21 @@ import {
                   <Grid class="flex flex-col mt-5">
                     <label class=" text-gray-700 font-medium text-sm font-Inter ">Title Tag</label>
                     <input
-                      {...register("tagName", { required: true, maxLength: 20 })}
+                      name='tagName'
+                      value={values.tagName}
                       placeholder="Enter a title"
                       class="rounded-sm p-2 border-2 mt-1.5 shadow-sm"
+                      onChange={changeHandler}
                     />
                     <label class="mb-1.5 mt-5 font-medium text-gray-700 text-sm font-Inter">
                       Meta Discription
                     </label>
                     <textarea
-                      {...register("addressArea", {
-                        required: true,
-                        maxLength: 120,
-                      })}
+                      name='description'
+                      value={values.description}
                       placeholder="Enter a description..."
                       class=" px-3.5 py-2.5 border-2 shadow-sm"
+                      onChange={changeHandler}
                     />
                   </Grid>
                   <Box class="flex flex-col justify-center items-center">
@@ -111,15 +101,16 @@ import {
                         <input
                           id="dropzone-file"
                           type="file"
-                          {...register("fileName", { required: true })}
-                          class="hidden"
                           name='fileName'
+                          value={values.fileName}
+                          class="hidden"
+                          onChange={changeHandler}
                         />
                       </label>
                     </Grid>
                   </Box>
-                 {values['fileName']?.length === 1 && <Box class='border border-LightBlack rounded-lg mt-5 px-4 py-2'>
-                    <ProgressDetailsBox val={val} valSize={valSize}/>
+                 {values.fileName !== '' && <Box class='border border-LightBlack rounded-lg mt-5 px-4 py-2'>
+                    <ProgressDetailsBox />
                   </Box>}
                   <Grid class="flex justify-center mt-5">
                     <Button class="bg-slate-300 flex flex-row rounded-2xl p-1 ">
@@ -139,6 +130,7 @@ import {
                   <Button
                     type="submit"
                     class="border border-solid bg-slate-700 px-10 py-1.5   rounded-lg font-medium text-base text-slate-100"
+        
                   >
                     Save Changes
                   </Button>
@@ -151,5 +143,5 @@ import {
     );
   }
   
-  export default DialogBoxCom;
+  export default DummyComp;
   
